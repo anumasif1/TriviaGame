@@ -1,11 +1,31 @@
-//document.ready
-$(document).ready(function(){
+$(document).ready(function () {
 
-//Array of objects (Trivia Questions, Choices, Values, Detail)
+  //hide reset button
+  $("#reset-button").hide();
+
+  //call function display
+  displayQuiz();
+
+
+  // //submit button
+  $("#submit-button").click(submit);
+
+  //set timeout and call timeUp function
+  timer = setTimeout(timeUp, 5000);
+
+  //reset();
+  $("#reset-button").click(reset);
+
+});
+
+ //set timeout and call timeUp function
+ var timer;
+
+//JSON object (questions, answers, value and details)
 var questions = [
-    {
+  {
     question: "Who is the oldest Kardashian sister?",
-    answers: ["Kylie", "Kim", "Kourtney", "Khloe", "Kendel"],
+    answers: ["Kylie", "Kim", "Kourtney", "Khloe"],
     values: [false, false, true, false, false],
     detail: "Kourtney is the oldest Kardashian sister.",
   },
@@ -26,93 +46,119 @@ var questions = [
     answers: ["Armenian", "Egyptian", "Hispanic", "Italian"],
     values: [true, false, false, false],
     detail: "Kardashians are part Armenian",
-  
+
   },
   {
     question: "What was Robert Kardashian's (senior) profession?",
-    answers: ["Doctor","Lawyer", "Engineer", "Actor"],
+    answers: ["Doctor", "Lawyer", "Engineer", "Actor"],
     values: [false, true, false, false],
     detail: "Robert George Kardashian was an American attorney and businessman."
   }]
-  
- 
 
+//define variables for correct answers, incorrect answers
+var correct = 0;
+var incorrect = 0;
 
+//function displayQuiz
+function displayQuiz() {
 
-//Set variables for currentQuestion, Correct, Incorrect.
+  //set a variable for <ul> to store html
+  var content = "";
 
-//for each loop to console.log objects in same order.
-//declare a variable to store innerhtml
-var content= "";
-var questionCount=0;
-//declare a count variable
-questions.forEach(function(quest) {
+  //set variable for questionCount
+  var questionCount = 0;
+
+  //use forEach to display questions and options
+  questions.forEach(function (quest) {
     console.log(content);
-    questionCount++;
-    //open ul tag and append to declared variable
-    content+="<ul>";
+    questionCount++
 
-   //yucontent = $("<ul>").append("Question: "+quest.question);
-   console.log(content)
+    //open <ul> and append to declared variable
+    content += "<ul>";
+
     //append h3 with id as q-'x' and text as question
-    content+="<h3 id='q-"+questionCount+"'>"+quest.question+"</h3>";
+    content += "<h3 id='q-" + questionCount + "'>" + quest.question + "</h3>";
+
     //open div tag and append to declared variable
-    content+="<div>";
+    content += "<div>";
 
     //declare name for group of answers q-'x'-answer
-    var groupName="q-"+questionCount+"-answer";
-    //iterate through answers/values
-    //(for (i=0;...obj.length;i++))
-    for(var i=0;i<quest.answers.length;i++){        
-        //create input radio with name for group and value = value[i]
-        //<input type="radio" name="question-1-answers" id="question-1-answers-A" value="A" name="q1" />
-        content+="<input type='radio' name='"+groupName+"' id='"+groupName+"-"+i+"' value='"+quest.values[i]+"'  />";
-        //<label for="question-1-answers-A">A) Kim </label>
-        //create label with innertext = answer[i]
-        content+="<label for='"+groupName+"-"+i+"'> "+quest.answers[i]+"</label>";
+    var groupName = "q-" + questionCount + "-answer";
+
+    //use forloop to iterate through answers
+    for (var i = 0; i < quest.answers.length; i++) {
+
+      //create input radio with name for group and value = value[i]
+      content += "<input type='radio' name='" + groupName + "' id='" + groupName + "-" + i + "' value='" + quest.values[i] + "' />";
+
+      //create label with innertext = answer[i]
+      content += "<label for='" + groupName + "-" + i + "'>" + quest.answers[i] + "</label>";
     }
-    //close div tag append
-    content+="</div>";
-    //close ul tag append
-    content+="</ul>";
+
+    //close <div> and <ul>
+    content += "</div>";
+    content += "</ul>";
 
 
-    console.log("Question: "+quest.question); 
-    console.log('Answers:');
-    var answerNumber=0;
-    quest.answers.forEach(function(answer){
-        answerNumber++;
-        console.log("Answer "+answerNumber+": "+answer);
-    });
+  })
 
-    console.log('Values:');
-    var valueNumber=0;
-    quest.values.forEach(function(value){
-        valueNumber++;
-        console.log("Value "+valueNumber+": "+value);
-    });
+  //set div innerhtlm+=variable for innerhtml
+  $("#trivia-questions").html($("#trivia-questions").html() + content);
+}
 
-    console.log("Detail: "+quest.detail);
-        //console.log(JSON.stringify(questions,null,4));
 
-})
-console.log(content);
-//set div innerhtlm+=variable for innerhtml
-$("#trivia-questions").html($("#trivia-questions").html()+content);
-
-//--------------------------------------------------------------------------------
-
-//Submit button
-$("form").submit(function(){
-    alert("Submitted");
-  });
-
-})
+function reset() {
+  correct = 0;
+  incorrect = 0;
+  $("#trivia-questions").html("");
+  displayQuiz();
+  timer = setTimeout(timeUp, 3000);
+  $("#reset-button").hide();
+  $("#submit-button").show();
+}
 
 //define function timeUP
-    //setTimeOut 30000
-    //questions removed
-    //display timeUp
-    //display correct answers
-    //display incorrect answers
-    //Reset Button
+function timeUp() {
+  // display reset button
+  $("#reset-button").show();
+  //hide submit button
+  $("#submit-button").hide();
+  //call function calculate
+  clearTimeout(timer);
+
+  calculate();
+  //display correct answers
+  $("#trivia-questions").html("Correct Answers:" + "" + correct + "<br/>" + "Incorrect Answers:" + "" + incorrect);
+
+  //display incorrect answers
+  //*********************/DisplayQuiz(true);***********************show answers
+}
+
+function calculate() {
+  var questionCount = 0;
+
+  questions.forEach(function (quest) {
+    questionCount++;
+
+    //declare name for group of answers q-'x'-answer
+    var groupName = "q-" + questionCount + "-answer";
+
+    //calculate correct and incorrect answers
+    var userAnswer = $("input[name='" + groupName + "']:checked").val();
+    if (userAnswer == "true") {
+      correct++
+    } else {
+      incorrect++
+    }
+
+  });
+}
+
+// //submit button
+function submit() {
+  timeUp();
+
+}
+
+
+
