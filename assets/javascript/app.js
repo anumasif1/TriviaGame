@@ -3,23 +3,35 @@ $(document).ready(function () {
   //hide reset button
   $("#reset-button").hide();
 
+  //set interval countdown to new
+  countDownDate = new Date();
+  countDownDate.setSeconds(countDownDate.getSeconds() + (questions.length * 5));
+  countDownDate = countDownDate.getTime();
+
   //call function display
   displayQuiz();
-
 
   // //submit button
   $("#submit-button").click(submit);
 
   //set timeout and call timeUp function
-  timer = setTimeout(timeUp, 5000);
+  timer = setTimeout(timeUp, (questions.length * 5000));
+
+  intervalDisplay = setInterval(showInterval, 1000);
 
   //reset();
   $("#reset-button").click(reset);
 
 });
 
- //set timeout and call timeUp function
- var timer;
+//set variable for timeout
+var timer;
+
+//set variable for countdown to display 
+var countDownDate = "";
+
+//setInterval variable
+var intervalDisplay;
 
 //JSON object (questions, answers, value and details)
 var questions = [
@@ -111,8 +123,13 @@ function reset() {
   correct = 0;
   incorrect = 0;
   $("#trivia-questions").html("");
+  $(".display-time").html("");
   displayQuiz();
-  timer = setTimeout(timeUp, 3000);
+  timer = setTimeout(timeUp, (questions.length * 5000));
+  countDownDate = new Date();
+  countDownDate.setSeconds(countDownDate.getSeconds() + (questions.length * 5));
+  countDownDate = countDownDate.getTime();
+  intervalDisplay = setInterval(showInterval, 1000);
   $("#reset-button").hide();
   $("#submit-button").show();
 }
@@ -125,7 +142,7 @@ function timeUp() {
   $("#submit-button").hide();
   //call function calculate
   clearTimeout(timer);
-
+  clearInterval(intervalDisplay);
   calculate();
   //display correct answers
   $("#trivia-questions").html("Correct Answers:" + "" + correct + "<br/>" + "Incorrect Answers:" + "" + incorrect);
@@ -158,6 +175,35 @@ function calculate() {
 function submit() {
   timeUp();
 
+}
+
+//function for interval
+function showInterval() {
+
+  // Get today's date and time
+  var now = new Date().getTime();
+
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+
+  // Time calculations for days, hours, minutes and seconds
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  if(minutes<10){
+    minutes="0"+minutes;
+  }
+  if(seconds<10){
+    seconds="0"+seconds;
+  }
+
+  // Output the result in an element with id="demo"
+  $(".display-time").html(minutes + ":" + seconds + "");
+
+  // If the count down is over, write some text 
+  if (distance < 0) {
+    clearInterval();
+    $(".display-time").html("Time's Up!");
+  }
 }
 
 
