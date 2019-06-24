@@ -89,10 +89,10 @@ function displayQuiz() {
     for (var i = 0; i < quest.answers.length; i++) {
 
       //create input radio with name for group and value = value[i]
-      content += "<input type='radio' name='" + groupName + "' id='" + groupName + "-" + i + "' value='" + quest.values[i] + "' />";
+      content += "<input class='correct-answer' type='radio' name='" + groupName + "' id='" + groupName + "-" + i + "' value='" + quest.values[i] + "' />";
 
       //create label with innertext = answer[i]
-      content += "<label for='" + groupName + "-" + i + "'>" + quest.answers[i] + "</label>";
+      content += "<label class='correct-answer' for='" + groupName + "-" + i + "'>" + quest.answers[i] + "</label>";
     }
 
     //close <div> and <ul>

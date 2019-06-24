@@ -1,5 +1,6 @@
 body{
     background-image: url("../images/sprinkles.png");
+    text-align: center;
 
 }
 
@@ -22,4 +23,31 @@ h1{
 .container{
     background-color: rgba(235, 235, 104, 0.671);
     margin-top: 20px;
+    text-align: center;
+}
+
+.button{
+    width: 100%;
+    margin:0 auto;
+}
+
+.buttons{
+    background-color:green;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+#reset-button{
+    background-color: red;
+}
+
+.correct-answer{
+    padding: 10px;
 }
